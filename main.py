@@ -2,6 +2,7 @@ import os
 
 from parserHTML import Parser
 from trie import Trie
+from parserUpita import *
 
 def parsiranje_HTML_dokumenata(path):
     trie = Trie()
@@ -19,7 +20,7 @@ def parsiranje_HTML_dokumenata(path):
                     for word in parser.words:  # Dodavanje reci u stablo
                         trie.add(word)
 
-    if trie.is_empty(): # Ako je stablo prazno znaci da ne postoji reci u .html dokumentu tj. ne postoji .html dokument
+    if trie.is_empty(): # Ako je stablo prazno znaci da ne postoji reci u .html dokumentu
         return False, trie
     else:
         return True, trie
@@ -42,9 +43,27 @@ def main():
         if opcija.isnumeric() == True:
             answer = int(opcija)
             if answer == 1:
-                print('Rezultati pretrage:')
-                flag, broj = trie.search('count')   # Provera da li ucitavanje reci u stablo dobro radi
-                print('Broj pojavljivanja reci count u direktorijumu c-api je : ', broj)
+                #print('Rezultati pretrage:')
+                #flag, broj = trie.search('count')   # Provera da li ucitavanje reci u stablo dobro radi
+                #print('Broj pojavljivanja reci count u direktorijumu c-api je : ', broj)
+                upit = input("Unesite upit za pretragu: ")
+                operator, reciUpita = parsiraj_upit(upit)
+                if operator == 'AND':
+                    print('Poziv pretrage sa AND operatorom')
+                    print('Reci koje se pretrazuju:')
+                    for rec in reciUpita:
+                        print(rec)
+                elif operator == 'OR':
+                    print('Poziv pretrage sa OR operatorom')
+                    print('Reci koje se pretrazuju:')
+                    for rec in reciUpita:
+                        print(rec)
+                elif operator == 'NOT':
+                    print('Poziv pretrage sa NOT operatorom')
+                    print('Reci koje se pretrazuju:')
+                    for rec in reciUpita:
+                        print(rec)
+                # else slucaj nije potreban zato sto se u parsiraj_upit ispisuju poruke o greskama ukoliko nije unet validan upit.
             elif answer == 2:
                 return
             else:
