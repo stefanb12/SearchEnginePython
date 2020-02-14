@@ -39,18 +39,18 @@ def parsiraj_upit(upit):
                     return None, None
                 if delovi[0].upper() == 'NOT' and len(delovi) == 2:   # Slucaj kada se operator NOT nalazi na prvom mestu
                     print('NOT je na dobrom mestu (Prvom)')
-                    return 'NOT', reciUpita
+                    return 'NOT1', reciUpita
                 elif delovi[1].upper() == 'NOT' and len(delovi) == 3:   # Slucaj kada se operator NOT nalazi izmedju dve reci
                     print('NOT je na dobrom mestu (Izmedju dve reci)')
-                    return 'NOT', reciUpita
+                    return 'NOT2', reciUpita
                 else:
                     print('GRESKA! Logicki operator NOT mora da bude izmedju tacno dve reci ili na prvom mestu.')
                     return  None, None
     elif len(saLogickimOperatorom) == 0 and len(reciUpita) != 0:
         print('Uneli ste reci za pretragu bez logickih operatora.')
-        return 'OR', reciUpita  # Ako su unete samo reci bez operatora, kao da je unet OR logicki operator
+        return 'BEZ_LOG_OP', reciUpita
     elif len(saLogickimOperatorom) == 0 and len(reciUpita) == 0:    # Ukoliko se u pretragu ne unese nista
-        print('GRESKA! Morate uneti reci koje zelite da pretrazite.')
+        print('GRESKA! Niste uneli validan upit.')
         return None, None
     else:
         print('GRESKA! Niste uneli validan upit.')
