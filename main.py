@@ -2,11 +2,13 @@ import os
 
 from parserHTML import Parser
 from trie import Trie
+from graph import Graph
 from parserUpita import *
 
 def parsiranje_HTML_dokumenata(path):
     trie = Trie()
     parser = Parser()
+    graph = Graph()
 
     if '.html' in path: # Ukoliko se unese putanja do odredjenog .html fajla nije potrebno prolaziti kroz direktorijume
         parser.parse(path)
@@ -17,6 +19,7 @@ def parsiranje_HTML_dokumenata(path):
             for file in files:
                 if '.html' in file: # U direktorijumu posmatramo samo .html dokumente
                     parser.parse(os.path.join(root, file))
+                    graph.dodajCvor(os.path.join(root, file))
                     for word in parser.words:  # Dodavanje reci u stablo
                         trie.add(word)
 
