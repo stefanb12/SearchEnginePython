@@ -1,7 +1,7 @@
 from set import Set
 
 class TrieNode:
-    def __init__(self, parent = None, char = None, html_file = None):
+    def __init__(self, parent = None, char = None):
         self.char = char
         if self.char is not None:
             self.char = self.char.lower()   # Pretraga treba da bude case insensitive
@@ -9,8 +9,8 @@ class TrieNode:
         self.children = []
         self.end = False
         self.count = 0
-        self.html_file = html_file
         self.set = Set()
+        self.path_count = {}
 
 class Trie:
 
@@ -28,25 +28,20 @@ class Trie:
                     found_in_child = True
                     break
             if not found_in_child:
-                new_Node = TrieNode(curr_node, char, html_file)
+                new_Node = TrieNode(curr_node, char)
                 curr_node.children.append(new_Node)
                 curr_node = new_Node
-        curr_node.end = True
-        if curr_node.html_file == html_file:  # Ako se rec vise puta nalazi na istoj stranici uvecavaj brojac
-            if curr_node.count == 0:
-                curr_node.count = 1
-            else:
-                curr_node.count += 1
-        elif curr_node.html_file != html_file:  # Kada u cvor stigne nova stranica prethodna stranica i broj pojavljivanja reci na njoj se smestaju u skup
-            if curr_node.count != 0:
-                curr_node.set.add(curr_node.html_file, curr_node.count)  # U skup dodajemo putanju do html dokumenta i broj pojavljivanja reci na njoj
-                curr_node.count = 1
-            curr_node.html_file = html_file  # U trenutnom cvoru stavljamo da stara html stranica postaje nova
+        curr_node.end = True                                # Stigli smo do kraja reci, potrebno je uvecati brojac i upisati putanju u set
+        if html_file not in curr_node.path_count.keys():    # Ako ne postoji html fajl u recniku, dodaj ga u recnik i u set
+            curr_node.path_count[html_file] = 1
+            curr_node.set.add(html_file)
+        else:                                               # Ako fajl vec postoji u recniku uvecaj broj pojavljivanja reci u tom fajlu
+            curr_node.path_count[html_file] += 1
 
     def search(self, word):
         word = word.lower().strip()
         if len(self.root.children) == 0:
-            return False, Set(), None, 0
+            return False, Set(), {}
 
         node = self.root
 
@@ -58,14 +53,14 @@ class Trie:
                     node = child
                     break
             if char_not_found:
-                return False, Set(), None, 0
+                return False, Set(), {}
 
         if node.end == False:
-            return False, Set(), None, 0
+            return False, Set(), {}
 
-        # U ovom slucaju je end = True i vracamo skup koji sadrzi putanje do html stranice i broj pojavljivanja reci na toj stranici
-        # Vracamo i putanju do poslednje stranice i broj pojavljivanja reci na njoj da bi ih dodali u skup
-        return node.end, node.set, node.html_file, node.count
+        # U ovom slucaju je end = True i vracamo skup koji sadrzi putanje do html stranica za trazenu rec
+        # i recnik koji sadrzi parove (putanja, broj pojavljivanja reci na putanji)
+        return node.end, node.set, node.path_count
 
     def is_empty(self): # Koristi se za proveru da li je uneta validna putanja za parsiranje .html dokumenta
         return len(self.root.children) == 0
