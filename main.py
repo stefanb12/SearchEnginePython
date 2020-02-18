@@ -48,7 +48,11 @@ def main():
             if answer == 1:
                 upit = input("Unesite upit za pretragu: ")
                 operator, reciUpita = parsiraj_upit(upit) # Pozivanje metode za parsiranje upita i utvrdjivanja postojanja nekog od logickih operatora i reci
-                pretrazi_dokumente(operator, reciUpita, trie) # Pozivanje pretrage dokumenta, rezultat pretrage je skup putanja do HTML dokumenata
+                if operator != None and reciUpita != None:
+                    rezultujuciSet, rezultujuciRecnik = pretrazi_dokumente(operator, reciUpita, trie) # Pozivanje pretrage dokumenta, rezultat pretrage je skup putanja do HTML dokumenata i recnik koji sadrzi parove(putanja, broj pojavljivanja reci na putanji)
+                    if rezultujuciRecnik != None:
+                        for key, value in rezultujuciRecnik.items():
+                            print(key, ' ->', value)
             elif answer == 2:
                 path = input("Unesite putanju do direktorijuma u okviru kog zelite da vrsite pretragu:")
                 uspesno, new_trie = parsiranje_HTML_dokumenata(path)

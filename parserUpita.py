@@ -19,31 +19,28 @@ def parsiraj_upit(upit):
             return None, None
         for logickiOperator in saLogickimOperatorom:
             if logickiOperator.upper().__eq__('AND'):
-                print('Uneli ste AND logicki operator.')
                 if delovi[1].upper() != 'AND' or len(delovi) != 3: # Ako smo uneli AND, ono mora da stoji izmedju dve reci, ne sme da bude vise od 2 reci uneto
                     print('GRESKA! Logicki operator AND mora da bude izmedju tacno dve reci.')
                     return None, None
-                print('AND je na dobrom mestu')
                 return 'AND', reciUpita
             elif logickiOperator.upper().__eq__('OR'):
-                print('Uneli ste OR logicki operator.')
                 if delovi[1].upper() != 'OR' or len(delovi) != 3: # Ako smo uneli OR, ono mora da stoji izmedju dve reci, ne sme da bude vise od 2 reci uneto
                     print('GRESKA! Logicki operator OR mora da bude izmedju tacno dve reci.')
                     return None, None
-                print('OR je na dobrom mestu')
                 return 'OR', reciUpita
             elif logickiOperator.upper().__eq__('NOT'):
-                print('Uneli ste NOT logicki operator.')
                 if delovi[1].upper() != 'NOT' or len(delovi) != 3: # Ako smo uneli NOT, ono mora da stoji izmedju dve reci, ne sme da bude vise od 2 reci uneto
                     print('GRESKA! Logicki operator NOT mora da bude izmedju tacno dve reci.')
                     return None, None
-                print('NOT je na dobrom mestu')
                 return 'NOT', reciUpita
     elif len(saLogickimOperatorom) == 0 and len(reciUpita) != 0:
-        print('Uneli ste reci za pretragu bez logickih operatora.')
-        return 'BEZ_LOG_OP', reciUpita
-    elif len(saLogickimOperatorom) == 0 and len(reciUpita) == 0:    # Ukoliko se u pretragu ne unese nista
-        print('GRESKA! Niste uneli validan upit.')
+        bezDuplikata = []   # U slucaju da se unese vise puta ista rec, ne treba sabirati broj pojavljivanja reci na istim stranicama, pa vracamo reci upita bez duplikata
+        for rec in reciUpita:
+            if rec not in bezDuplikata:
+                bezDuplikata.append(rec)
+        return 'BEZ_LOG_OP', bezDuplikata
+    elif len(saLogickimOperatorom) == 0 and len(reciUpita) == 0: # Ukoliko se u pretragu ne unese nista
+        print('GRESKA! Morate uneti reci koje zelite da pretrazite.')
         return None, None
     else:
         print('GRESKA! Niste uneli validan upit.')
