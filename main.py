@@ -5,6 +5,8 @@ from parserUpita import *
 from pretraga import *
 from trie import Trie
 from graph import Graph
+from sortiranje import *
+from paginacija import paginacijaRezultata
 
 def parsiranje_HTML_dokumenata(path):
     trie = Trie()
@@ -47,12 +49,31 @@ def main():
             answer = int(opcija)
             if answer == 1:
                 upit = input("Unesite upit za pretragu: ")
-                operator, reciUpita = parsiraj_upit(upit) # Pozivanje metode za parsiranje upita i utvrdjivanja postojanja nekog od logickih operatora i reci
+                operator, reciUpita = parsiraj_upit(
+                    upit)  # Pozivanje metode za parsiranje upita i utvrdjivanja postojanja nekog od logickih operatora i reci
                 if operator != None and reciUpita != None:
-                    rezultujuciSet, rezultujuciRecnik = pretrazi_dokumente(operator, reciUpita, trie) # Pozivanje pretrage dokumenta, rezultat pretrage je skup putanja do HTML dokumenata i recnik koji sadrzi parove(putanja, broj pojavljivanja reci na putanji)
+                    rezultujuciSet, rezultujuciRecnik = pretrazi_dokumente(operator, reciUpita, trie)  # Pozivanje pretrage dokumenta, rezultat pretrage je skup putanja do HTML dokumenata i recnik koji sadrzi parove(putanja, broj pojavljivanja reci na putanji)
                     if rezultujuciRecnik != None:
+                        lista_vrednosti = []
+                        lista_kljuceva = []
                         for key, value in rezultujuciRecnik.items():
-                            print(key, ' ->', value)
+                            # print(key, ' ->', value)
+                            lista_vrednosti.append(value)
+                            lista_kljuceva.append(key)
+
+                        sortiraj(lista_vrednosti)
+
+                        lista_vrednosti = list(dict.fromkeys(lista_vrednosti))
+                        print("Sortirani prikaz:")
+                        for vrednost in lista_vrednosti:
+                            for kljuc in rezultujuciRecnik.keys():
+                                if rezultujuciRecnik.get(kljuc) == vrednost:
+                                    print(kljuc, ' -> ', rezultujuciRecnik.get(kljuc))
+
+                        print("")
+                        print("PAGINACIJA REZULTATA")
+                        paginacijaRezultata(lista_kljuceva)
+                        print("")
             elif answer == 2:
                 path = input("Unesite putanju do direktorijuma u okviru kog zelite da vrsite pretragu:")
                 uspesno, new_trie = parsiranje_HTML_dokumenata(path)
