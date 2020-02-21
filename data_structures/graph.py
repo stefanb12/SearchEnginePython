@@ -1,4 +1,4 @@
-from parserHTML import Parser
+from search_parser.parserHTML import Parser
 
 class CvorGrafa:
     def __init__(self,stranice = None):

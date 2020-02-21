@@ -1,12 +1,12 @@
 import os
 
-from parserHTML import Parser
-from parserUpita import *
-from pretraga import *
-from trie import Trie
-from graph import Graph
-from sortiranje import *
-from paginacija import paginacijaRezultata
+from search_parser.parserHTML import Parser
+from search_parser.parserUpita import *
+from search_parser.pretraga import *
+from data_structures.trie import Trie
+from data_structures.graph import Graph
+from pagination_sort.sortiranje import *
+from pagination_sort.paginacija import paginacijaRezultata
 
 def parsiranje_HTML_dokumenata(path):
     trie = Trie()
@@ -30,69 +30,65 @@ def main():
     global trie
     uspesno = False
     while uspesno == False:
-        path = input("Unesite putanju do direktorijuma u okviru kog zelite da vrsite pretragu:")
+        path = input("Unesite putanju do direktorijuma u okviru kog želite da vršite pretragu: ")
         # path = 'D:\Korisnik\Stefan\Desktop\Python\test-skup\python-2.7.7-docs-html\c-api'
 
         uspesno, trie = parsiranje_HTML_dokumenata(path)
 
         if uspesno == False:
-            print("GRESKA! Niste uneli validnu putanju ili ne postoje HTML dokumenti u direktorijumu koji ste uneli.")
-            print("Primer validne putanje -> D:\Korisnik\Stefan\Desktop\Python\\test-skup\python-2.7.7-docs-html")
+            print("\nGREŠKA! Niste uneli validnu putanju ili ne postoje HTML dokumenti u direktorijumu koji ste uneli.")
+            print("NAPOMENA: Direktorijum za pretragu mora da sadrži HTML dokumente.\n")
+        else:
+            print("\nOBAVEŠTENJE: Uspešno ste uneli putanju do direktorijuma za pretragu.\n")
 
     while True:
-        print('OPCIJE:')
-        print('1. Pretraga reci u HTML dokumentima.')
+        print("IZABERITE OPCIJU:")
+        print('0. Izlazak iz programa.')
+        print('1. Pretraga reči u HTML dokumentima.')
         print('2. Unos nove putanje do direktorijuma za pretragu.')
-        print('3. Izlazak iz programa.')
-        opcija = input('Izaberite opciju: ')
+        opcija = input('Vaša opcija: ')
         if opcija.isnumeric() == True:
             answer = int(opcija)
             if answer == 1:
                 upit = input("Unesite upit za pretragu: ")
-                operator, reciUpita = parsiraj_upit(
-                    upit)  # Pozivanje metode za parsiranje upita i utvrdjivanja postojanja nekog od logickih operatora i reci
+                operator, reciUpita = parsiraj_upit(upit) # Pozivanje metode za parsiranje upita i utvrdjivanja postojanja nekog od logickih operatora i reci
                 if operator != None and reciUpita != None:
                     rezultujuciSet, rezultujuciRecnik = pretrazi_dokumente(operator, reciUpita, trie)  # Pozivanje pretrage dokumenta, rezultat pretrage je skup putanja do HTML dokumenata i recnik koji sadrzi parove(putanja, broj pojavljivanja reci na putanji)
-                    if rezultujuciRecnik != None:
+                    if rezultujuciSet != None and rezultujuciRecnik != None:
+                        print("\nOBAVEŠTENJE: Pretraga uspešno izvršena, broj pronađenih HTML dokumenata je " + str(len(rezultujuciSet.skup)) + ".")
                         lista_vrednosti = []
                         lista_kljuceva = []
                         for key, value in rezultujuciRecnik.items():
-                            # print(key, ' ->', value)
                             lista_vrednosti.append(value)
-                            # lista_kljuceva.append(key)
 
                         sortiraj(lista_vrednosti)
 
                         sortirani_recnik = {}
                         lista_vrednosti = list(dict.fromkeys(lista_vrednosti))
-                        print("Sortirani prikaz:")
                         for vrednost in lista_vrednosti:
                             for kljuc in rezultujuciRecnik.keys():
                                 if rezultujuciRecnik.get(kljuc) == vrednost:
-                                    print(kljuc, ' -> ', rezultujuciRecnik.get(kljuc))
                                     sortirani_recnik.update({kljuc: vrednost})
                                     lista_kljuceva.append(kljuc)
 
-                        print("")
-                        print("PAGINACIJA REZULTATA")
+                        print("\nREZULTATI PRETRAGE:")
                         paginacijaRezultata(sortirani_recnik, lista_kljuceva)
-                        print("")
             elif answer == 2:
-                path = input("Unesite putanju do direktorijuma u okviru kog zelite da vrsite pretragu:")
+                path = input("Unesite putanju do direktorijuma u okviru kog želite da vršite pretragu: ")
                 uspesno, new_trie = parsiranje_HTML_dokumenata(path)
                 if uspesno == True:
-                    print("OBAVESTENJE: Uspesno ste uneli putanju do novog direktorijuma.")
-                    print("NAPOMENA: Pretraga ce se vrsiti u okviru novog direktorijuma koji ste uneli.")
+                    print("\nOBAVEŠTENJE: Uspešno ste uneli putanju do novog direktorijuma.")
+                    print("NAPOMENA: Pretraga će se vršiti u okviru novog direktorijuma koji ste uneli.\n")
                     trie = new_trie
                 else:
-                    print("GRESKA! Niste uneli validnu putanju ili ne postoje HTML dokumenti u direktorijumu koji ste uneli.")
-                    print("NAPOMENA: Pretraga ce se vrsiti u okviru direktorijuma koji je prethodno unet.")
-            elif answer == 3:
+                    print("\nGREŠKA! Niste uneli validnu putanju ili ne postoje HTML dokumenti u direktorijumu koji ste uneli.")
+                    print("NAPOMENA: Pretraga će se vršiti u okviru direktorijuma koji je prethodno unet.\n")
+            elif answer == 0:
                 return
             else:
-                print("GRESKA! Morate izabrati jednu od ponudjenih opcija.")
+                print("\nGREŠKA! Morate izabrati jednu od ponuđenih opcija.\n")
         else:
-            print("GRESKA! Morate izabrati jednu od ponudjenih opcija.")
+            print("\nGREŠKA! Morate izabrati jednu od ponuđenih opcija.\n")
 
 if __name__ == '__main__':
     main()

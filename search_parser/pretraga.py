@@ -1,4 +1,4 @@
-from set import Set
+from data_structures.set import Set
 
 def pretrazi_dokumente(operator, reciUpita, trie):
     if operator == 'AND':   # Ukoliko je unet AND operator postojace dve reci za pretragu, u suprotnom ce biti prijavljena greska
@@ -6,7 +6,7 @@ def pretrazi_dokumente(operator, reciUpita, trie):
         postoji2, set2, recnik2 = trie.search(reciUpita[1])
 
         if postoji1 == False or postoji2 == False:
-            print('Ne postoje HTML dokumenti koji zadovoljavaju upit koji ste uneli.')
+            print('\nREZULTATI PRETRAGE:\nNe postoje HTML dokumenti koji zadovoljavaju upit koji ste uneli.\n')
             return None, None
         elif postoji1 == True and postoji2 == True:
             rezRecnik = {}
@@ -22,7 +22,7 @@ def pretrazi_dokumente(operator, reciUpita, trie):
         postoji2, set2, recnik2 = trie.search(reciUpita[1])
 
         if postoji1 == False and postoji2 == False:
-            print('Ne postoje HTML dokumenti koji zadovoljavaju upit koji ste uneli.')
+            print('\nREZULTATI PRETRAGE:\nNe postoje HTML dokumenti koji zadovoljavaju upit koji ste uneli.\n')
             return None, None
         elif postoji1 == True and postoji2 == False: # Ukoliko postji skup samo za prvu rec, rezultujuci skup je prvi skup
             return set1, recnik1
@@ -47,7 +47,7 @@ def pretrazi_dokumente(operator, reciUpita, trie):
         postoji2, set2, recnik2 = trie.search(reciUpita[1])
 
         if postoji1 == False:  # Ako ne postoje fajlovi koji sadrze prvu rec upita (rec pre not) rezulat pretrage ce uvek biti bez fajlova
-            print('Ne postoje HTML dokumenti koji zadovoljavaju upit koji ste uneli.')
+            print('\nREZULTATI PRETRAGE:\nNe postoje HTML dokumenti koji zadovoljavaju upit koji ste uneli.\n')
             return None, None
         elif postoji1 == True and postoji2 == False:  # Ako ne postoje fajlovi koji sadrze rec posle not, rezultat ce uvek biti skup prve reci
             return set1, recnik1
@@ -55,7 +55,7 @@ def pretrazi_dokumente(operator, reciUpita, trie):
             rezRecnik = {}
             rezSet = Set()
             if reciUpita[0] == reciUpita[1]:    # Ukoliko je uneta ista rec pre i posle not operatora, rezulat ce uvek biti prazan skup
-                print('Ne postoje HTML dokumenti koji zadovoljavaju upit koji ste uneli.')
+                print('\nREZULTATI PRETRAGE:\nNe postoje HTML dokumenti koji zadovoljavaju upit koji ste uneli.\n')
                 return None, None
             rezSet = set1.complement(set2)
             for putanja in rezSet.skup.keys():
@@ -78,7 +78,7 @@ def pretrazi_dokumente(operator, reciUpita, trie):
                     rezRecnik = saberiBrojeveIstihPutanja(rezSet, rezRecnik, recnik)
 
         if len(rezSet.skup) == 0:
-            print('Ne postoje HTML dokumenti koji zadovoljavaju upit koji ste uneli.')
+            print('\nREZULTATI PRETRAGE:\nNe postoje HTML dokumenti koji zadovoljavaju upit koji ste uneli.\n')
             return None, None
         else:
             return rezSet, rezRecnik

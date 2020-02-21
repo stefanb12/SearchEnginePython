@@ -1,4 +1,4 @@
-from set import Set
+from data_structures.set import Set
 
 class TrieNode:
     def __init__(self, parent = None, char = None):
@@ -9,8 +9,8 @@ class TrieNode:
         self.children = []
         self.end = False
         self.count = 0
-        self.set = Set()
-        self.path_count = {}
+        self.set = Set()    # Set koji sadrzi putanje do stranica na kojima se rec nalazi
+        self.path_count = {}    # Recnik koji sadrzi parove (putanja, boj pojavljivanja reci na putanji)
 
 class Trie:
 
