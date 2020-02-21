@@ -59,20 +59,23 @@ def main():
                         for key, value in rezultujuciRecnik.items():
                             # print(key, ' ->', value)
                             lista_vrednosti.append(value)
-                            lista_kljuceva.append(key)
+                            # lista_kljuceva.append(key)
 
                         sortiraj(lista_vrednosti)
 
+                        sortirani_recnik = {}
                         lista_vrednosti = list(dict.fromkeys(lista_vrednosti))
                         print("Sortirani prikaz:")
                         for vrednost in lista_vrednosti:
                             for kljuc in rezultujuciRecnik.keys():
                                 if rezultujuciRecnik.get(kljuc) == vrednost:
                                     print(kljuc, ' -> ', rezultujuciRecnik.get(kljuc))
+                                    sortirani_recnik.update({kljuc: vrednost})
+                                    lista_kljuceva.append(kljuc)
 
                         print("")
                         print("PAGINACIJA REZULTATA")
-                        paginacijaRezultata(lista_kljuceva)
+                        paginacijaRezultata(sortirani_recnik, lista_kljuceva)
                         print("")
             elif answer == 2:
                 path = input("Unesite putanju do direktorijuma u okviru kog zelite da vrsite pretragu:")
