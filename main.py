@@ -5,8 +5,9 @@ from search_parser.parserUpita import *
 from search_parser.pretraga import *
 from data_structures.trie import Trie
 from data_structures.graph import Graph
-from pagination_sort.sortiranje import *
-from pagination_sort.paginacija import paginacijaRezultata
+from pagination_rang_sort.sortiranje import *
+from pagination_rang_sort.paginacija import paginacijaRezultata
+from pagination_rang_sort.rangiranje import *
 
 def parsiranje_HTML_dokumenata(path):
     trie = Trie()
@@ -18,22 +19,24 @@ def parsiranje_HTML_dokumenata(path):
             if '.html' in file: # U direktorijumu posmatramo samo .html dokumente
                 parser.parse(os.path.join(root, file))
                 graph.dodajCvor(os.path.join(root, file))
+                graph.dodajGranu(os.path.join(root, file))
                 for word in parser.words:  # Dodavanje reci u stablo
                     trie.add(word, os.path.join(root, file))
 
     if trie.is_empty(): # Ako je stablo prazno znaci da ne postoji reci u .html dokumentu
-        return False, trie
+        return False, trie, graph
     else:
-        return True, trie
+        return True, trie, graph
 
 def main():
     global trie
+    global graph
     uspesno = False
     while uspesno == False:
         path = input("Unesite putanju do direktorijuma u okviru kog želite da vršite pretragu: ")
         # path = 'D:\Korisnik\Stefan\Desktop\Python\test-skup\python-2.7.7-docs-html\c-api'
 
-        uspesno, trie = parsiranje_HTML_dokumenata(path)
+        uspesno, trie, graph = parsiranje_HTML_dokumenata(path)
 
         if uspesno == False:
             print("\nGREŠKA! Niste uneli validnu putanju ili ne postoje HTML dokumenti u direktorijumu koji ste uneli.")
@@ -58,16 +61,19 @@ def main():
                         print("\nOBAVEŠTENJE: Pretraga uspešno izvršena, broj pronađenih HTML dokumenata je " + str(len(rezultujuciSet.skup)) + ".")
                         lista_vrednosti = []
                         lista_kljuceva = []
-                        for key, value in rezultujuciRecnik.items():
+                        rangirani_recnik = rangStranice(rezultujuciRecnik, graph, operator, reciUpita) # Pozivanjem rangStranice dobijemo recnik u kome su kljucevi HTML stranice a vrednosti njihovi rangovi
+
+                        for key, value in rangirani_recnik.items():
                             lista_vrednosti.append(value)
 
                         sortiraj(lista_vrednosti)
 
                         sortirani_recnik = {}
-                        lista_vrednosti = list(dict.fromkeys(lista_vrednosti))
+                        lista_vrednosti = list(dict.fromkeys(lista_vrednosti)) #izbacivanje duplikata iz liste
+                        print("Sortirani prikaz:")
                         for vrednost in lista_vrednosti:
-                            for kljuc in rezultujuciRecnik.keys():
-                                if rezultujuciRecnik.get(kljuc) == vrednost:
+                            for kljuc in rangirani_recnik.keys():
+                                if rangirani_recnik.get(kljuc) == vrednost:
                                     sortirani_recnik.update({kljuc: vrednost})
                                     lista_kljuceva.append(kljuc)
 
@@ -75,11 +81,12 @@ def main():
                         paginacijaRezultata(sortirani_recnik, lista_kljuceva)
             elif answer == 2:
                 path = input("Unesite putanju do direktorijuma u okviru kog želite da vršite pretragu: ")
-                uspesno, new_trie = parsiranje_HTML_dokumenata(path)
+                uspesno, new_trie, new_graph = parsiranje_HTML_dokumenata(path)
                 if uspesno == True:
                     print("\nOBAVEŠTENJE: Uspešno ste uneli putanju do novog direktorijuma.")
                     print("NAPOMENA: Pretraga će se vršiti u okviru novog direktorijuma koji ste uneli.\n")
                     trie = new_trie
+                    graph = new_graph
                 else:
                     print("\nGREŠKA! Niste uneli validnu putanju ili ne postoje HTML dokumenti u direktorijumu koji ste uneli.")
                     print("NAPOMENA: Pretraga će se vršiti u okviru direktorijuma koji je prethodno unet.\n")

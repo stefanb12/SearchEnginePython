@@ -1,10 +1,12 @@
 def sortiraj(lista):
     if len(lista) > 1:
-        polovina = len(lista) // 2
+        polovina = len(lista) // 2  #pronalazak sredine liste
 
+        #podela liste na polovine
         leva_polovina = lista[:polovina]
         desna_polovina = lista[polovina:]
 
+        #sortiranje leve i desne polovine
         sortiraj(leva_polovina)
         sortiraj(desna_polovina)
 
