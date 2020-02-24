@@ -34,7 +34,6 @@ def main():
     uspesno = False
     while uspesno == False:
         path = input("Unesite putanju do direktorijuma u okviru kog želite da vršite pretragu: ")
-        # path = 'D:\Korisnik\Stefan\Desktop\Python\test-skup\python-2.7.7-docs-html\c-api'
 
         uspesno, trie, graph = parsiranje_HTML_dokumenata(path)
 
@@ -70,7 +69,6 @@ def main():
 
                         sortirani_recnik = {}
                         lista_vrednosti = list(dict.fromkeys(lista_vrednosti)) #izbacivanje duplikata iz liste
-                        print("Sortirani prikaz:")
                         for vrednost in lista_vrednosti:
                             for kljuc in rangirani_recnik.keys():
                                 if rangirani_recnik.get(kljuc) == vrednost:
