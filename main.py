@@ -1,4 +1,5 @@
 import os
+from time import time
 
 from search_parser.parserHTML import Parser
 from search_parser.parserUpita import *
@@ -13,7 +14,7 @@ def parsiranje_HTML_dokumenata(path):
     trie = Trie()
     parser = Parser()
     graph = Graph()
-
+    start = time()
     for root, directories, files in os.walk(path):
         for file in files:
             if '.html' in file: # U direktorijumu posmatramo samo .html dokumente
@@ -22,11 +23,11 @@ def parsiranje_HTML_dokumenata(path):
                 graph.dodajGranu(os.path.join(root, file))
                 for word in parser.words:  # Dodavanje reci u stablo
                     trie.add(word, os.path.join(root, file))
-
+    end = time()
     if trie.is_empty(): # Ako je stablo prazno znaci da ne postoji reci u .html dokumentu
-        return False, trie, graph
+        return False, trie, graph, end - start
     else:
-        return True, trie, graph
+        return True, trie, graph, end - start
 
 def main():
     global trie
@@ -35,13 +36,14 @@ def main():
     while uspesno == False:
         path = input("Unesite putanju do direktorijuma u okviru kog želite da vršite pretragu: ")
 
-        uspesno, trie, graph = parsiranje_HTML_dokumenata(path)
+        uspesno, trie, graph, vreme = parsiranje_HTML_dokumenata(path)
 
         if uspesno == False:
             print("\nGREŠKA! Niste uneli validnu putanju ili ne postoje HTML dokumenti u direktorijumu koji ste uneli.")
             print("NAPOMENA: Direktorijum za pretragu mora da sadrži HTML dokumente.\n")
         else:
-            print("\nOBAVEŠTENJE: Uspešno ste uneli putanju do direktorijuma za pretragu.\n")
+            print("\nOBAVEŠTENJE: Uspešno ste uneli putanju do direktorijuma za pretragu.")
+            print("VREME UČITAVANJA PODATAKA:", vreme, "\n")
 
     while True:
         print("IZABERITE OPCIJU:")
@@ -79,10 +81,11 @@ def main():
                         paginacijaRezultata(sortirani_recnik, lista_kljuceva)
             elif answer == 2:
                 path = input("Unesite putanju do direktorijuma u okviru kog želite da vršite pretragu: ")
-                uspesno, new_trie, new_graph = parsiranje_HTML_dokumenata(path)
+                uspesno, new_trie, new_graph, vreme = parsiranje_HTML_dokumenata(path)
                 if uspesno == True:
                     print("\nOBAVEŠTENJE: Uspešno ste uneli putanju do novog direktorijuma.")
-                    print("NAPOMENA: Pretraga će se vršiti u okviru novog direktorijuma koji ste uneli.\n")
+                    print("NAPOMENA: Pretraga će se vršiti u okviru novog direktorijuma koji ste uneli.")
+                    print("VREME UČITAVANJA PODATAKA:", vreme, "\n")
                     trie = new_trie
                     graph = new_graph
                 else:
